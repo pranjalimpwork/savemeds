@@ -5,7 +5,7 @@ const LandingSection = () => {
     <div className={style.landing_section}>
       <div className={style.context_part}>
         <div className={style.title}>About Us</div>
-        <div className={style.sub_title}>Who are we?.</div>
+        <div className={style.sub_title}>Service start by Sejal and Khyati.</div>
       </div>
       <div className={style.img_part}></div>
     </div>

@@ -11,14 +11,12 @@ const AboutComponent = () => {
           <div className="context_wrapper">
             <div className="title">WHY CHOOSE US?</div>
             <div className="descp">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-              reiciendis exercitationem esse commodi alias dolor, consequuntur
-              itaque excepturi nulla cum.
+              The main aim or objective of this medicine donation system is to
+              help poor people for medication. Many needy people will get cured.
             </div>
             <div className="descp">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-              reiciendis exercitationem esse commodi alias dolor, consequuntur
-              itaque excepturi nulla cum.
+              With the use of all, all resources can become open to all member
+              institutions that operate in different areas at the same time.
             </div>
           </div>
         </div>
