@@ -1,0 +1,26 @@
+.donate_section {
+  padding: 5rem 2rem;
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+
+    .sub_title {
+      font-weight: 600;
+      font-size: 18px;
+      color: #5e6282;
+      margin-bottom: 20px;
+    }
+    .title {
+      color: #1f212b;
+      font-weight: 700;
+      font-size: 46px;
+    }
+  }
+  .card_section {
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // flex-wrap: wrap;
+    display: flow-root;
+  }
+}

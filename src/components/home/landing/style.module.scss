@@ -1,0 +1,36 @@
+.landing_section {
+  background-image: url("https://images.unsplash.com/photo-1585435557343-3b092031a831?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8bWVkaWNhbCUyMGJhY2tncm91bmR8ZW58MHx8MHx8&w=1000&q=80");
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 2rem;
+  height: 80vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  .context_part {
+    width: 50%;
+    .title {
+      font-weight: 700;
+      font-size: 84px;
+      margin-bottom: 10px;
+    }
+    .sub_title {
+      font-weight: 500;
+      font-size: 18px;
+      margin-bottom: 25px;
+    }
+    .action_btn {
+      cursor: pointer;
+      background: #ff0090;
+      border: none;
+      outline: none;
+      border-radius: 32px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #ffffff;
+      padding: 15px;
+      width: 125px;
+      margin-right: 10px;
+    }
+  }
+}

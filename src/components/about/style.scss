@@ -1,0 +1,39 @@
+.why_us_section {
+  margin: 6rem auto;
+  width: 80%;
+  .wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+    .context_wrapper,
+    .img_box {
+      width: 50%;
+      height: 100%;
+    }
+    .context_wrapper {
+        background-color: rgba(0, 0, 0, 0.08);
+        padding: 2rem 1rem;
+      .title {
+        font-weight: 700;
+        font-size: 40px;
+        margin-bottom: 10px;
+      }
+      .descp {
+        font-weight: 500;
+        font-size: 17px;
+        margin-bottom: 10px;
+      }
+    }
+    .img_box {
+      background-color: red;
+      height: 500px;
+      background-image: url("https://u7.uidownload.com/vector/568/395/vector-medical-background-design-eps.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.297);
+    }
+  }
+}

@@ -1,0 +1,36 @@
+.landing_section {
+  background-image: url("https://png.pngtree.com/background/20210714/original/pngtree-vector-design-background-medical-instruments-for-vaccine-picture-image_1204718.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 2rem;
+  height: 70vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  .context_part {
+    width: 50%;
+    .title {
+      font-weight: 700;
+      font-size: 84px;
+      margin-bottom: 10px;
+    }
+    .sub_title {
+      font-weight: 500;
+      font-size: 18px;
+      margin-bottom: 25px;
+    }
+    .action_btn {
+      cursor: pointer;
+      background: #ff0090;
+      border: none;
+      outline: none;
+      border-radius: 32px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #ffffff;
+      padding: 15px;
+      width: 125px;
+      margin-right: 10px;
+    }
+  }
+}
