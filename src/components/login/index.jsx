@@ -1,15 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input } from "antd";
 import style from "./style.module.scss";
+
+import { useAuth } from "../context/login";
+import { useNavigation, Navigate } from "react-router-dom";
 const LoginComponent = ({ setShowLogin }) => {
+  const { access, login, logout } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isValid, setIsValid] = useState(true);
   const onSubmit = () => {
-    if (email === "") setIsValid(false);
-    if (password === "") setIsValid(false);
+    if (email === "") {
+      setIsValid(false);
+      return;
+    }
+    if (password === "") {
+      setIsValid(false);
+      return;
+    }
+    if (isValid) {
+      const res = login(email, password);
+      console.log("Res", res);
+    }
   };
-  return (
+  useEffect(() => {
+    console.log("access", access);
+  }, []);
+  return access ? (
+    <Navigate to="/" replace />
+  ) : (
     <div className={style.login_container}>
       <div className={style.input_field_container}>
         <div className={style.wrapper}>
@@ -46,6 +65,9 @@ const LoginComponent = ({ setShowLogin }) => {
           <div className={style.input_fields}>
             <Button style={{ width: "100%" }} type="primary" onClick={onSubmit}>
               Login
+            </Button>
+            <Button style={{ width: "100%" }} type="primary" onClick={logout}>
+              Logout
             </Button>
           </div>
           <div className={style.footer}>

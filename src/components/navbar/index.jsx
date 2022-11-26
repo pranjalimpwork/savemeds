@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./style.scss";
 import { MenuOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/login";
 const NavbarComponent = () => {
   //   const location = useLocation();
+  const { access, logout } = useAuth();
   const [currentRoute, setcurrentRoute] = useState("/");
   function myFunction() {
     console.log("ara", window.location.hash);
@@ -22,10 +24,6 @@ const NavbarComponent = () => {
     {
       url: "/about",
       title: "About",
-    },
-    {
-      url: "/login",
-      title: "Login",
     },
   ];
   useEffect(() => {
@@ -49,7 +47,25 @@ const NavbarComponent = () => {
             </Link>
           );
         })}
-
+        {!access && (
+          <Link
+            to={"/login"}
+            className={currentRoute === "/login" ? "active" : ""}
+          >
+            LogIn
+          </Link>
+        )}
+        {access && (
+          <Link
+            to={"/"}
+            className={currentRoute}
+            onClick={() => {
+              logout();
+            }}
+          >
+            Logout
+          </Link>
+        )}
         <a
           href="javascript:void(0);"
           className="icon"

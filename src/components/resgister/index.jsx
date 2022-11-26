@@ -1,16 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input } from "antd";
 import style from "./style.module.scss";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../services/firebase";
+import { useAuth } from "../context/login";
+import { Navigate } from "react-router-dom";
+
 const RegisterComponent = ({ setShowLogin }) => {
+  const { registerUser, access } = useAuth();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [isValid, setIsValid] = useState(true);
   const onSubmit = () => {
-    if (email === "") setIsValid(false);
-    if (password === "") setIsValid(false);
+    if (email === "") {
+      setIsValid(false);
+      return;
+    }
+    if (password === "") {
+      setIsValid(false);
+      return;
+    }
+    if (isValid) {
+      registerUser(email, password);
+      // createUserWithEmailAndPassword(auth, email, password)
+      //   .then((userCredential) => {
+      //     console.log("User--", userCredential);
+      //     const user = userCredential.user;
+      //   })
+      //   .catch((error) => {});
+    }
   };
-  return (
+
+  useEffect(() => {
+    console.log("access", access);
+  }, []);
+
+  return access ? (
+    <Navigate to="/" replace />
+  ) : (
     <div className={style.register_container}>
       <div className={style.input_field_container}>
         <div className={style.wrapper}>

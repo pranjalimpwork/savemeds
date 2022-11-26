@@ -1,0 +1,37 @@
+.search_page_container {
+  min-height: 100vh;
+  .search_header {
+    min-height: 40vh;
+    background-color: rgb(36, 107, 189);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+    flex-direction: column;
+    gap: 25px;
+    .title {
+      text-align: center;
+      margin-bottom: 20px;
+      font-family: 40px;
+      font-weight: 600;
+      color: #ffff;
+    }
+  }
+  .data_field_container {
+    max-width: 80%;
+    margin: 0 auto;
+  }
+  .filter_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+}
+
+.search_input {
+  font-size: 25px;
+  //   padding: 200px;
+
+  width: 500px;
+}

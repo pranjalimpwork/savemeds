@@ -6,20 +6,25 @@ import FooterComponent from "./components/footer";
 import NavbarComponent from "./components/navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AboutUsPage from "./pages/about";
+import SearchPage from "./pages/search";
+import AuthProvider from "./components/context/auth";
 function App() {
   return (
     <>
-      <Router>
-        <NavbarComponent />
-        <Routes>
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/about" element={<AboutUsPage />} />
-          <Route path="*" element={<HomePage />} />
-          <Route path="/login" element={<AuthenticationPage />} />
-        </Routes>
+      <AuthProvider>
+        <Router>
+          <NavbarComponent />
+          <Routes>
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/about" element={<AboutUsPage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="*" element={<HomePage />} />
+            <Route path="/login" element={<AuthenticationPage />} />
+          </Routes>
 
-        <FooterComponent />
-      </Router>
+          <FooterComponent />
+        </Router>
+      </AuthProvider>
     </>
   );
 }

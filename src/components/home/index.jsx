@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import LandingSection from "./landing";
 import DonateSection from "./donatesection";
+
 const HomeComponent = () => {
+
+
   return (
     <div>
       <LandingSection />
