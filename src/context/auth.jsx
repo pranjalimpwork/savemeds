@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { AuthContext } from "./login";
-import { auth } from "../../services/firebase";
+import { auth } from "../services/firebase";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -19,6 +19,8 @@ const AuthProvider = ({ children }) => {
       if (typeof token === "string" && token !== "") {
         setAccess(true);
         setToken(token);
+        const userData = window.localStorage.getItem("user");
+        if (!!userData) setUser(userData);
         setLoading(false);
       } else {
         setAccess(false);
@@ -28,20 +30,22 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    let res = null;
+    let resData = null;
     console.log("emai;", email);
-    signInWithEmailAndPassword(auth, email, password)
+    resData = signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        res = userCredential.user;
+        let res = userCredential.user;
         setUser(res);
         setAccess(true);
         setToken(res.accessToken);
         localStorage.setItem("token", res.accessToken);
+        localStorage.setItem("user", res);
         console.log(res);
+        return res;
       })
       .catch((error) => {});
 
-    return res;
+    return resData;
   };
 
   const logout = () => {
@@ -59,17 +63,19 @@ const AuthProvider = ({ children }) => {
       });
   };
   const registerUser = (email, password) => {
-    let res = null;
-    createUserWithEmailAndPassword(auth, email, password)
+    let resData = null;
+    resData = createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        res = userCredential.user;
+        let res = userCredential.user;
         setUser(res);
         setAccess(true);
         localStorage.setItem("token", res.access_token);
-        console.log("user--", res);
+
+        localStorage.setItem("user", res);
+        return res;
       })
       .catch((error) => {});
-    // return user;
+    return resData;
   };
 
   return (

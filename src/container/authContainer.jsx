@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import LoginComponent from "../components/login";
 import RegisterComponent from "../components/resgister";
 const AuthContainer = () => {
-  const [showLogin, setShowLogin] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
   useEffect(() => {
     console.log("showLogin", showLogin);
   }, [showLogin]);

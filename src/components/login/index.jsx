@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Input } from "antd";
 import style from "./style.module.scss";
 
-import { useAuth } from "../context/login";
+import { useAuth } from "../../context/login"; 
 import { useNavigation, Navigate } from "react-router-dom";
 const LoginComponent = ({ setShowLogin }) => {
   const { access, login, logout } = useAuth();

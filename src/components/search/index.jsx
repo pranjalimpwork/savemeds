@@ -13,6 +13,19 @@ const SearchComponent = () => {
   const onSearch = (value) => console.log(value);
   const [cities, setCities] = useState([{}]);
   const [states, setStates] = useState([]);
+
+  useEffect(() => {
+    console.log("state", State.getStatesOfCountry("IN"));
+    console.log("CITY", City.getCitiesOfState("IN", "CT"));
+    setStates(State.getStatesOfCountry("IN"));
+    setCities(City.getCitiesOfState("IN", "CT"));
+  }, []);
+
+  const changeCityList = (stateCode) => {
+    console.log("dada", stateCode);
+    setCities(City.getCitiesOfState("IN", stateCode));
+  };
+
   const columns = [
     {
       title: "Name",
@@ -84,17 +97,6 @@ const SearchComponent = () => {
       tags: ["cool", "teacher"],
     },
   ];
-  useEffect(() => {
-    console.log("state", State.getStatesOfCountry("IN"));
-    console.log("CITY", City.getCitiesOfState("IN", "CT"));
-    setStates(State.getStatesOfCountry("IN"));
-    setCities(City.getCitiesOfState("IN", "CT"));
-  }, []);
-
-  const changeCityList = (stateCode) => {
-    console.log("dada", stateCode);
-    setCities(City.getCitiesOfState("IN", stateCode));
-  };
 
   return (
     <>
@@ -102,7 +104,7 @@ const SearchComponent = () => {
         <div className={style.search_header}>
           <div className={style.search_box_container}>
             <div className={style.title}>
-              Enter The Name Of The Medicine <FiSearch className={"s"} />{" "}
+              Enter The Name Of The Medicine{" "}
             </div>
             <Search
               placeholder="input search text"
@@ -111,36 +113,38 @@ const SearchComponent = () => {
             />
           </div>
           <div className={style.filter_container}>
-            {cities && (
-              <Select
-                defaultValue={"Select Cities"}
-                style={{
-                  width: 120,
-                }}
-                onChange={handleChange}
-                options={cities.map((val, ind) => {
-                  return {
-                    value: val.name,
-                    label: val.name,
-                  };
-                })}
-              />
-            )}
-            {states && (
-              <Select
-                defaultValue={"Select States"}
-                style={{
-                  width: 120,
-                }}
-                onChange={changeCityList}
-                options={states.map((val, ind) => {
-                  return {
-                    value: val.isoCode,
-                    label: val.name,
-                  };
-                })}
-              />
-            )}
+            <div className={style.filter_selector}>
+              <div className={style.label}>Select States</div>
+              {states && (
+                <Select
+                  defaultValue={"Select States"}
+                  className={style.select}
+                  onChange={changeCityList}
+                  options={states.map((val, ind) => {
+                    return {
+                      value: val.isoCode,
+                      label: val.name,
+                    };
+                  })}
+                />
+              )}
+            </div>
+            <div className={style.filter_selector}>
+              <div className={style.label}>Select City</div>
+              {cities && (
+                <Select
+                  defaultValue={"Select Cities"}
+                  className={style.select}
+                  onChange={handleChange}
+                  options={cities.map((val, ind) => {
+                    return {
+                      value: val.name,
+                      label: val.name,
+                    };
+                  })}
+                />
+              )}
+            </div>
           </div>
         </div>
         <div className={style.data_field_container}>

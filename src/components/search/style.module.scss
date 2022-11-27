@@ -26,6 +26,18 @@
     justify-content: center;
     align-items: center;
     gap: 20px;
+    .filter_selector {
+      width: 160px;
+      text-align: center;
+      .label {
+        text-align: center;
+        color: #ffff;
+        margin-bottom: 10px;
+      }
+      .select {
+        width: 100%;
+      }
+    }
   }
 }
 

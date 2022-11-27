@@ -1,34 +1,109 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input } from "antd";
+import { Button, Input, Select } from "antd";
 import style from "./style.module.scss";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../services/firebase";
-import { useAuth } from "../context/login";
+import { Country, State, City } from "country-state-city";
+import { useAuth } from "../../context/login";
 import { Navigate } from "react-router-dom";
-
+import { addUser } from "../../services/user";
 const RegisterComponent = ({ setShowLogin }) => {
   const { registerUser, access } = useAuth();
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const onSearch = (value) => console.log(value);
+  const [cities, setCities] = useState([{}]);
+  const [states, setStates] = useState([]);
+
+  useEffect(() => {
+    setStates(State.getStatesOfCountry("IN"));
+    setCities(City.getCitiesOfState("IN", "CT"));
+  }, []);
+
+  const changeCityList = (stateCode) => {
+
+    setCities(City.getCitiesOfState("IN", stateCode));
+  };
+  const [userData, setUserData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phonenumber: "",
+    password: "",
+    country: "",
+    state: "",
+    city: "",
+    address: "",
+  });
+
+  const inputArray = [
+    {
+      field: "firstname",
+      label: "First Name",
+      fieldType: "text",
+    },
+    {
+      field: "lastname",
+      label: "Last Name",
+      fieldType: "text",
+    },
+
+    {
+      field: "phonenumber",
+      label: "Phone Number",
+      fieldType: "text",
+    },
+    {
+      field: "country",
+      label: "Country",
+      fieldType: "select",
+    },
+    {
+      field: "state",
+      label: "State",
+      fieldType: "select",
+    },
+    {
+      field: "city",
+      label: "City",
+      fieldType: "select",
+    },
+    {
+      field: "address",
+      label: "Address",
+      fieldType: "text",
+    },
+    {
+      field: "email",
+      label: "Email",
+      fieldType: "text",
+    },
+    {
+      field: "password",
+      label: "PassWord",
+      fieldType: "password",
+    },
+  ];
+
   const [isValid, setIsValid] = useState(true);
-  const onSubmit = () => {
-    if (email === "") {
+
+  const handleInputChange = (field, value) => {
+    let data = { ...userData };
+    data[field] = value;
+    setUserData(data);
+  };
+  const onSubmit = async () => {
+    if (userData.email === "") {
       setIsValid(false);
       return;
     }
-    if (password === "") {
+    if (userData.email === "") {
       setIsValid(false);
       return;
     }
     if (isValid) {
-      registerUser(email, password);
-      // createUserWithEmailAndPassword(auth, email, password)
-      //   .then((userCredential) => {
-      //     console.log("User--", userCredential);
-      //     const user = userCredential.user;
-      //   })
-      //   .catch((error) => {});
+      // const res = await registerUser(userData.email, userData.password);
+      // if (res) {
+      //   await addUser(res.uid, userData);
+      // } else {
+      //   //
+      // }
     }
   };
 
@@ -48,39 +123,63 @@ const RegisterComponent = ({ setShowLogin }) => {
               Enter your credential to access your account.
             </div>
           </div>
-          <div className={style.input_fields}>
-            <div className={style.label}>Name</div>
-            <Input
-              autoComplete="off"
-              status={!isValid && name == "" ? "error" : null}
-              placeholder="input name"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-            />
-          </div>
-          <div className={style.input_fields}>
-            <div className={style.label}>Email</div>
-            <Input
-              autoComplete="off"
-              status={!isValid && email == "" ? "error" : null}
-              placeholder="input email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-            />
-          </div>
+
+          {inputArray.map((fieldData, index) => {
+            return (
+              <div className={style.input_fields} key={index}>
+                <div className={style.label}>{fieldData.label}</div>
+                {fieldData.fieldType == "text" ? (
+                  <Input
+                    autoComplete="off"
+                    status={
+                      !isValid && userData[fieldData.field] == ""
+                        ? "error"
+                        : null
+                    }
+                    placeholder={`input ${fieldData.field}`}
+                    value={userData[fieldData.field]}
+                    onChange={(e) => {
+                      handleInputChange(fieldData.field, e.target.value);
+                    }}
+                  />
+                ) : fieldData.fieldType == "select" ? (
+                  <Select
+                    defaultValue={"Select States"}
+                    className={style.select}
+                    onChange={changeCityList}
+                    options={states.map((val, ind) => {
+                      return {
+                        value: val.isoCode,
+                        label: val.name,
+                      };
+                    })}
+                  />
+                ) : (
+                  <Input.Password
+                    autoComplete="off"
+                    status={
+                      !isValid && userData["password"] == "" ? "error" : null
+                    }
+                    placeholder="input password"
+                    value={userData["password"]}
+                    onChange={(e) => {
+                      handleInputChange("password", e.target.value);
+                    }}
+                  />
+                )}
+              </div>
+            );
+          })}
+
           <div className={style.input_fields}>
             <div className={style.label}>Password</div>
             <Input.Password
               autoComplete="off"
-              status={!isValid && password == "" ? "error" : null}
+              status={!isValid && userData["password"] == "" ? "error" : null}
               placeholder="input password"
-              value={password}
+              value={userData["password"]}
               onChange={(e) => {
-                setPassword(e.target.value);
+                handleInputChange("password", e.target.value);
               }}
             />
           </div>
@@ -101,12 +200,6 @@ const RegisterComponent = ({ setShowLogin }) => {
           </div>
         </div>
       </div>
-      <div
-        className={style.img_wrapper}
-        style={{
-          backgroundImage: `url(${"https://i.pinimg.com/564x/d2/fb/ec/d2fbecc532de1b53f5b6bd1e1b7a913d.jpg"})`,
-        }}
-      ></div>
     </div>
   );
 };

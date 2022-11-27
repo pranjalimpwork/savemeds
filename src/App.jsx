@@ -7,7 +7,8 @@ import NavbarComponent from "./components/navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AboutUsPage from "./pages/about";
 import SearchPage from "./pages/search";
-import AuthProvider from "./components/context/auth";
+import AuthProvider from "./context/auth";
+import DashBoardComponent from "./components/dashboard";
 function App() {
   return (
     <>
@@ -15,6 +16,7 @@ function App() {
         <Router>
           <NavbarComponent />
           <Routes>
+            <Route path="/dashboard" element={<DashBoardComponent />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/about" element={<AboutUsPage />} />
             <Route path="/search" element={<SearchPage />} />

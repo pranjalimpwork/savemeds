@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./style.scss";
 import { MenuOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/login";
+
+import { useAuth } from "../../context/login";
 const NavbarComponent = () => {
   //   const location = useLocation();
   const { access, logout } = useAuth();
@@ -20,10 +21,32 @@ const NavbarComponent = () => {
     {
       url: "/home",
       title: "Home",
+      show: true,
     },
     {
       url: "/about",
       title: "About",
+      show: true,
+    },
+    {
+      url: "/search",
+      title: "Search",
+      show: true,
+    },
+    {
+      url: "/dashboard",
+      title: "Dashboard",
+      show: access,
+    },
+    {
+      url: "/login",
+      title: "Login",
+      show: !access,
+    },
+    {
+      url: "/logout",
+      title: "Logout",
+      show: access,
     },
   ];
   useEffect(() => {
@@ -37,35 +60,22 @@ const NavbarComponent = () => {
           <img src="/img/logo.png" alt="" />
         </a>
         {urlLinks.map((val, ind) => {
-          return (
+          return val.show ? (
             <Link
               to={val.url}
               className={currentRoute == val.url ? "active" : ""}
-              onClick={() => setcurrentRoute(val.url)}
+              onClick={() => {
+                setcurrentRoute(val.url);
+                if (val.url.includes("logout")) logout();
+              }}
             >
               {val.title}
             </Link>
+          ) : (
+            ""
           );
         })}
-        {!access && (
-          <Link
-            to={"/login"}
-            className={currentRoute === "/login" ? "active" : ""}
-          >
-            LogIn
-          </Link>
-        )}
-        {access && (
-          <Link
-            to={"/"}
-            className={currentRoute}
-            onClick={() => {
-              logout();
-            }}
-          >
-            Logout
-          </Link>
-        )}
+
         <a
           href="javascript:void(0);"
           className="icon"
