@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Input } from "antd";
 import style from "./style.module.scss";
-
-import { useAuth } from "../../context/login"; 
-import { useNavigation, Navigate } from "react-router-dom";
+import { useAuth } from "../../context/login";
+import { Navigate } from "react-router-dom";
 const LoginComponent = ({ setShowLogin }) => {
-  const { access, login, logout } = useAuth();
+  const { access, login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isValid, setIsValid] = useState(true);
@@ -23,9 +22,7 @@ const LoginComponent = ({ setShowLogin }) => {
       console.log("Res", res);
     }
   };
-  useEffect(() => {
-    console.log("access", access);
-  }, []);
+
   return access ? (
     <Navigate to="/" replace />
   ) : (
@@ -42,7 +39,7 @@ const LoginComponent = ({ setShowLogin }) => {
             <div className={style.label}>Email</div>
             <Input
               autoComplete="off"
-              status={!isValid && email == "" ? "error" : null}
+              status={!isValid && email === "" ? "error" : null}
               placeholder="input email"
               value={email}
               onChange={(e) => {
@@ -54,7 +51,7 @@ const LoginComponent = ({ setShowLogin }) => {
             <div className={style.label}>Password</div>
             <Input.Password
               autoComplete="off"
-              status={!isValid && password == "" ? "error" : null}
+              status={!isValid && password === "" ? "error" : null}
               placeholder="input password"
               value={password}
               onChange={(e) => {
@@ -65,9 +62,6 @@ const LoginComponent = ({ setShowLogin }) => {
           <div className={style.input_fields}>
             <Button style={{ width: "100%" }} type="primary" onClick={onSubmit}>
               Login
-            </Button>
-            <Button style={{ width: "100%" }} type="primary" onClick={logout}>
-              Logout
             </Button>
           </div>
           <div className={style.footer}>

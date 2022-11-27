@@ -98,7 +98,22 @@ const DashBoardComponent = () => {
             </Avatar>
           </div>
           <div className={style.user_info}>
-            <div className={style.user_name}> {userInfo.firstname} {userInfo.lastname} </div>
+            <div className={style.user_name}>
+              {" "}
+              {userInfo.firstname} {userInfo.lastname}{" "}
+            </div>
+            <div className={style.user_data}>
+              {Object.entries(userInfo).map((data_fields, index) => {
+                const [field, value] = data_fields;
+                if (!field.includes("first") && !field.includes("last"))
+                  return (
+                    <div className={style.data_field}>
+                      <div className={style.field}>{field}</div>
+                      <div className={style.value}>{value}</div>
+                    </div>
+                  );
+              })}
+            </div>
           </div>
         </div>
         <ModalComponent showModal={showModal} setShowModal={setShowModal} />

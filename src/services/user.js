@@ -9,17 +9,20 @@ import {
 
 export const addUser = async (uid, data) => {
   await setDoc(doc(db, "user", uid), data);
+  return null;
 };
 
 export const getUsers = () => {
   const database = collection(db, "user");
-  const unsubscribe = onSnapshot(collection(db, "user"), (snapData) => {
+  const unsubscribe = onSnapshot(database, (snapData) => {
     snapData.docs.map((data) => {
       console.log("Dataa", data.data());
+      return data.data();
     });
   });
   // Stop listening to changes
-  //   unsubscribe();
+  unsubscribe();
+  return null;
 };
 export const getUser = async (uid) => {
   const docRef = doc(db, "user", uid);
@@ -30,5 +33,3 @@ export const getUser = async (uid) => {
   }
   return null;
 };
-
-//
