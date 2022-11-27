@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./style.scss";
 import { MenuOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../../context/login";
 const NavbarComponent = () => {
-  //   const location = useLocation();
+  const location = useLocation();
   const { access, logout } = useAuth();
-  const [currentRoute, setcurrentRoute] = useState("/");
+  const [currentRoute, setcurrentRoute] = useState(location.pathname);
   function myFunction() {
     console.log("ara", window.location.hash);
     var x = document.getElementById("myTopnav");
@@ -50,8 +50,8 @@ const NavbarComponent = () => {
     },
   ];
   useEffect(() => {
-    setcurrentRoute(window.location.pathname);
-  }, []);
+    setcurrentRoute(location.pathname);
+  }, [location]);
 
   return (
     <div>

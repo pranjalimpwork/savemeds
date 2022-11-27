@@ -20,7 +20,9 @@ const AuthProvider = ({ children }) => {
         setAccess(true);
         setToken(token);
         const userData = window.localStorage.getItem("user");
-        if (!!userData) setUser(userData);
+
+        console.log("userrrr",JSON.parse(userData));
+        if (!!userData) setUser(JSON.parse(userData));
         setLoading(false);
       } else {
         setAccess(false);
@@ -39,8 +41,8 @@ const AuthProvider = ({ children }) => {
         setAccess(true);
         setToken(res.accessToken);
         localStorage.setItem("token", res.accessToken);
-        localStorage.setItem("user", res);
-        console.log(res);
+        localStorage.setItem("user", JSON.stringify(res));
+        console.log("res",res);
         return res;
       })
       .catch((error) => {});

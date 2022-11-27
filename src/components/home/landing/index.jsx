@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import style from "./style.module.scss";
 const LandingSection = () => {
   return (
@@ -9,8 +10,12 @@ const LandingSection = () => {
           Our work aims to break the vicious cycle of poverty and social
           isolation and to restore hope for a better future.
         </div>
-        <button className={style.action_btn}>Search</button>
-        <button className={style.action_btn}>Donate</button>
+        <Link to={"/search"}>
+          <button className={style.action_btn}>Search</button>
+        </Link>
+        <Link to={"/dashboard"}>
+          <button className={style.action_btn}>Donate</button>
+        </Link>
       </div>
       <div className={style.img_part}></div>
     </div>

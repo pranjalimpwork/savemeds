@@ -2,6 +2,9 @@
   width: 80%;
   max-width: 1140px;
   margin: 40px auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
   .context_section {
     width: 60%;
     .header {
@@ -40,6 +43,31 @@
     }
   }
   .profile_info {
-    width: 40%;
+    text-align: center;
+    width: 30%;
+    background: #00000008;
+    border-radius: 20px;
+    padding: 30px 0;
+    .profile_img_box {
+      margin-bottom: 30px;
+      .profile_avatar {
+        height: 100px;
+        width: 100px;
+        margin: 0 auto;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 50px;
+      }
+    }
+    .user_info {
+      .user_name {
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 0px;
+        color: #121212;
+      }
+    }
   }
 }

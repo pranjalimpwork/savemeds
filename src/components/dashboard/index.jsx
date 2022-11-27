@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "./style.module.scss";
-import { Button, Table, Space } from "antd";
+import { Button, Table, Space, Skeleton, Avatar } from "antd";
 import ModalComponent from "./modal";
 import { useAuth } from "../../context/login";
 import { Navigate } from "react-router-dom";
-
+import { getUser } from "../../services/user";
 const DashBoardComponent = () => {
   const { access, user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const columns = [
     {
@@ -49,40 +51,66 @@ const DashBoardComponent = () => {
       quantity: 32,
     },
   ];
+  const getUserData = async () => {
+    const res = await getUser(user.uid);
+    setUserInfo(res);
+    setLoading(false);
+    console.log("res", res);
+  };
+  useEffect(() => {
+    getUserData();
+  }, []);
+
   return access ? (
-    <div className={style.dashboard_section}>
-      <div className={style.context_section}>
-        <div className={style.header}>
-          <div className={style.main_txt}>Welcome Back, Pranjal Tiwari</div>
-          <div className={style.sub_contxt}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus,
-            doloribus!
+    !loading ? (
+      <div className={style.dashboard_section}>
+        <div className={style.context_section}>
+          <div className={style.header}>
+            <div className={style.main_txt}>
+              Welcome Back, {userInfo.firstname} {userInfo.lastname}
+            </div>
+            <div className={style.sub_contxt}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Temporibus, doloribus!
+            </div>
+          </div>
+          <div className={style.action_btn_container}>
+            <Button
+              className={style.action_btn}
+              onClick={() => setShowModal(true)}
+              shape="round"
+            >
+              {" "}
+              Add Medicine{" "}
+            </Button>
+          </div>
+          <div className={style.table_container}>
+            <div className={style.table_header}>Added Medicines</div>
+            <div className={style.table}>
+              <Table className={""} columns={columns} dataSource={data} />
+            </div>
           </div>
         </div>
-        <div className={style.action_btn_container}>
-          <Button
-            className={style.action_btn}
-            onClick={() => setShowModal(true)}
-            shape="round"
-          >
-            {" "}
-            Add Medicine{" "}
-          </Button>
-        </div>
-        <div className={style.table_container}>
-          <div className={style.table_header}>Added Medicines</div>
-          <div className={style.table}>
-            <Table className={""} columns={columns} dataSource={data} />
+        <div className={style.profile_info}>
+          <div className={style.profile_img_box}>
+            <Avatar className={style.profile_avatar} size="large">
+              {userInfo.firstname.substring(0, 1)}
+            </Avatar>
+          </div>
+          <div className={style.user_info}>
+            <div className={style.user_name}> {userInfo.firstname} {userInfo.lastname} </div>
           </div>
         </div>
+        <ModalComponent showModal={showModal} setShowModal={setShowModal} />
       </div>
-      <div className={style.profile_info}>
-        <div className={style.profile_img_box}></div>
-      </div>
-      <ModalComponent showModal={showModal} setShowModal={setShowModal} />
-    </div>
+    ) : (
+      <Skeleton
+        style={{ height: "100vh", width: "80%", margin: "0 auto" }}
+        active
+      />
+    )
   ) : (
-    <Navigate to="/" replace />
+    <Navigate to="/login" replace />
   );
 };
 

@@ -8,6 +8,8 @@ const ModalComponent = ({ showModal, setShowModal }) => {
     name: "",
     quantity: "",
     addedDate: "",
+    manufactureDate: "",
+    expireDate: "",
     userId: "",
     userName: "",
     phoneNumber: "",
@@ -33,7 +35,15 @@ const ModalComponent = ({ showModal, setShowModal }) => {
 
     {
       field: "addedDate",
-      label: "Phone Number",
+      label: "Added Date",
+    },
+    {
+      field: "manufactureDate",
+      label: "Manufactuing Date",
+    },
+    {
+      field: "expireDate",
+      label: "Expire Date",
     },
   ];
 
