@@ -5,8 +5,10 @@ import ModalComponent from "./modal";
 import { useAuth } from "../../context/login";
 import { Navigate } from "react-router-dom";
 import { getUser } from "../../services/user";
+import { getAllMedicine, getUserAddedMedicine } from "../../services/database";
 const DashBoardComponent = () => {
   const { access, user } = useAuth();
+  const [medicineData, setMedicineData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -28,6 +30,16 @@ const DashBoardComponent = () => {
       key: "addedDate",
     },
     {
+      title: "MNF Date",
+      dataIndex: "manufactureDate",
+      key: "manufactureDate",
+    },
+    {
+      title: "EXP Date",
+      dataIndex: "expireDate",
+      key: "expireDate",
+    },
+    {
       title: "Action",
       key: "action",
       render: (_, record) => (
@@ -37,29 +49,26 @@ const DashBoardComponent = () => {
       ),
     },
   ];
-  const data = [
-    {
-      key: "1",
-      name: "John Brown",
-      quantity: 32,
-      addedDate: 32,
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      addedDate: 32,
-      quantity: 32,
-    },
-  ];
+
   const getUserData = async () => {
     const res = await getUser(user.uid);
-    setUserInfo(res);
+    setUserInfo({ ...res, id: user.uid });
     setLoading(false);
     console.log("res", res);
   };
+
   useEffect(() => {
     getUserData();
+    if (user) getUserAddedMedicine(user.uid, setMedicineData);
+    // const unsub = getAllMedicine(setMedicineData);
+    // return () => {
+    //   unsub();
+    // };
   }, []);
+
+  useEffect(() => {
+    getUserAddedMedicine(user.uid, setMedicineData);
+  }, [user]);
 
   return access ? (
     !loading ? (
@@ -87,7 +96,11 @@ const DashBoardComponent = () => {
           <div className={style.table_container}>
             <div className={style.table_header}>Added Medicines</div>
             <div className={style.table}>
-              <Table className={""} columns={columns} dataSource={data} />
+              <Table
+                className={""}
+                columns={columns}
+                dataSource={medicineData}
+              />
             </div>
           </div>
         </div>
@@ -105,7 +118,12 @@ const DashBoardComponent = () => {
             <div className={style.user_data}>
               {Object.entries(userInfo).map((data_fields, index) => {
                 const [field, value] = data_fields;
-                if (!field.includes("first") && !field.includes("last"))
+                if (
+                  !field.includes("first") &&
+                  !field.includes("last") &&
+                  !field.includes("password") &&
+                  !field.includes("id")
+                )
                   return (
                     <div className={style.data_field}>
                       <div className={style.field}>{field}</div>
@@ -116,13 +134,18 @@ const DashBoardComponent = () => {
             </div>
           </div>
         </div>
-        <ModalComponent showModal={showModal} setShowModal={setShowModal} />
+        <ModalComponent
+          showModal={showModal}
+          setShowModal={setShowModal}
+          userData={userInfo}
+        />
       </div>
     ) : (
-      <Skeleton
-        style={{ height: "100vh", width: "80%", margin: "0 auto" }}
-        active
-      />
+      <div className={style.skeleton_container}>
+        <Skeleton style={{ width: "80%", margin: "50px auto" }} active />
+        <Skeleton style={{ width: "80%", margin: "100px auto" }} active />
+        <Skeleton style={{ width: "80%", margin: "20px auto" }} active />
+      </div>
     )
   ) : (
     <Navigate to="/login" replace />

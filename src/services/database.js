@@ -13,21 +13,25 @@ export const addMedicine = async (data) => {
   await addDoc(database, data);
 };
 
-export const getAllMedicine = () => {
+export const getAllMedicine = (setAddedData) => {
   const unsubscribe = onSnapshot(database, (snapData) => {
-    snapData.docs.map((data) => {
-      console.log("Dataa", data.data());
+    let dataArr = [];
+    snapData.docs.map((data, ind) => {
+      dataArr = [...dataArr, data.data()];
     });
+    setAddedData(dataArr);
   });
   // Stop listening to changes
-  //   unsubscribe();
+  return unsubscribe;
 };
 
-export const getUserAddedMedicine = async (uid) => {
-  const q = query(database, where("userID", "==", uid));
+export const getUserAddedMedicine = async (uid, setAddedData) => {
+  const q = query(database, where("userId", "==", uid));
   const unsubscribe = onSnapshot(q, (snapData) => {
-    snapData.docs.map((data) => {
-      console.log("Dataa", data.data());
+    let reqData = [];
+    snapData.forEach((doc) => {
+      reqData.push(doc.data());
     });
+    setAddedData(reqData);
   });
 };

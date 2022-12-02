@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Input } from "antd";
+import { Modal, Button, Input, DatePicker } from "antd";
 import style from "./style.module.scss";
-
-const ModalComponent = ({ showModal, setShowModal }) => {
+import { addMedicine } from "../../../services/database";
+const ModalComponent = ({ showModal, setShowModal, userData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [medicineData, setMedicineData] = useState({
     name: "",
@@ -10,22 +10,28 @@ const ModalComponent = ({ showModal, setShowModal }) => {
     addedDate: "",
     manufactureDate: "",
     expireDate: "",
-    userId: "",
-    userName: "",
-    phoneNumber: "",
-    address: "",
+    userId: userData.id,
+    userName: userData.firstname + " " + userData.lastname,
+    phoneNumber: userData.phonenumber,
+    address: userData.address,
   });
   const hideModal = () => {
     setIsModalOpen(false);
     setShowModal(false);
   };
+
+  const addData = async () => {
+    addMedicine(medicineData);
+    // hideModal();
+  };
+
   useEffect(() => {
     setIsModalOpen(showModal);
   }, [showModal]);
 
   const inputArray = [
     {
-      field: "medicineName",
+      field: "name",
       label: "Medicine Name",
     },
     {
@@ -52,6 +58,7 @@ const ModalComponent = ({ showModal, setShowModal }) => {
   const handleInputChange = (field, value) => {
     let data = { ...medicineData };
     data[field] = value;
+    console.log("data", data);
     setMedicineData(data);
   };
 
@@ -64,26 +71,37 @@ const ModalComponent = ({ showModal, setShowModal }) => {
             return (
               <div className={style.input_fields} key={index}>
                 <div className={style.label}>{fieldData.label}</div>
-                <Input
-                  autoComplete="off"
-                  status={
-                    !isValid && medicineData[fieldData.field] == ""
-                      ? "error"
-                      : null
-                  }
-                  placeholder={`input ${fieldData.field}`}
-                  value={medicineData[fieldData.field]}
-                  onChange={(e) => {
-                    handleInputChange(fieldData.field, e.target.value);
-                  }}
-                />
+                {!fieldData.field.includes("Date") ? (
+                  <Input
+                    autoComplete="off"
+                    status={
+                      !isValid && medicineData[fieldData.field] === ""
+                        ? "error"
+                        : null
+                    }
+                    placeholder={`input ${fieldData.field}`}
+                    value={medicineData[fieldData.field]}
+                    onChange={(e) => {
+                      handleInputChange(fieldData.field, e.target.value);
+                    }}
+                  />
+                ) : (
+                  <DatePicker
+                    className={style.select}
+                    onChange={(date, dateString) => {
+                      handleInputChange(fieldData.field, dateString);
+                    }}
+                  />
+                )}
               </div>
             );
           })}
         </div>
         <div className={style.modal_footer}>
           <Button onClick={hideModal}>Cancel</Button>
-          <Button className={style.action_btn}>Add </Button>
+          <Button className={style.action_btn} onClick={addData}>
+            Add{" "}
+          </Button>
         </div>
       </div>
     </Modal>

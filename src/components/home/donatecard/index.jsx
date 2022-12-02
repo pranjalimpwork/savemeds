@@ -1,5 +1,6 @@
 import React from "react";
 import style from "./style.module.scss";
+import { Button } from "antd";
 const DonateCard = ({ name, img }) => {
   return (
     <div className={style.donate_card}>
@@ -14,7 +15,7 @@ const DonateCard = ({ name, img }) => {
       </div>
       <div className={style.body}>
         <div className={style.name}>{name ?? "Paracetamol"}</div>
-        <div className={style.donate_btn}>Donate</div>
+        <Button>Donate</Button>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Select } from "antd";
 import style from "./style.module.scss";
-import { Country, State, City } from "country-state-city";
+import { State, City } from "country-state-city";
 import { useAuth } from "../../context/login";
 import { Navigate } from "react-router-dom";
 import { addUser } from "../../services/user";
@@ -10,14 +10,12 @@ const RegisterComponent = ({ setShowLogin }) => {
   const onSearch = (value) => console.log(value);
   const [cities, setCities] = useState([{}]);
   const [states, setStates] = useState([]);
-
   useEffect(() => {
     setStates(State.getStatesOfCountry("IN"));
     setCities(City.getCitiesOfState("IN", "CT"));
   }, []);
 
   const changeCityList = (stateCode) => {
-
     setCities(City.getCitiesOfState("IN", stateCode));
   };
   const [userData, setUserData] = useState({
@@ -49,11 +47,11 @@ const RegisterComponent = ({ setShowLogin }) => {
       label: "Phone Number",
       fieldType: "text",
     },
-    {
-      field: "country",
-      label: "Country",
-      fieldType: "select",
-    },
+    // {
+    //   field: "country",
+    //   label: "Country",
+    //   fieldType: "select",
+    // },
     {
       field: "state",
       label: "State",
@@ -76,7 +74,7 @@ const RegisterComponent = ({ setShowLogin }) => {
     },
     {
       field: "password",
-      label: "PassWord",
+      label: "Password",
       fieldType: "password",
     },
   ];
@@ -88,6 +86,16 @@ const RegisterComponent = ({ setShowLogin }) => {
     data[field] = value;
     setUserData(data);
   };
+
+  const handleCityChange = (value, label, field) => {
+    let data = { ...userData };
+    data[field] = label.label;
+    data.country = "INDIA";
+    console.log(data);
+    setUserData(data);
+    if (field === "state") setCities(City.getCitiesOfState("IN", value));
+  };
+
   const onSubmit = async () => {
     if (userData.email === "") {
       setIsValid(false);
@@ -98,18 +106,14 @@ const RegisterComponent = ({ setShowLogin }) => {
       return;
     }
     if (isValid) {
-      // const res = await registerUser(userData.email, userData.password);
-      // if (res) {
-      //   await addUser(res.uid, userData);
-      // } else {
-      //   //
-      // }
+      const res = await registerUser(userData.email, userData.password);
+      if (res) {
+        await addUser(res.uid, userData);
+      } else {
+        //
+      }
     }
   };
-
-  useEffect(() => {
-    console.log("access", access);
-  }, []);
 
   return access ? (
     <Navigate to="/" replace />
@@ -125,64 +129,78 @@ const RegisterComponent = ({ setShowLogin }) => {
           </div>
 
           {inputArray.map((fieldData, index) => {
-            return (
-              <div className={style.input_fields} key={index}>
-                <div className={style.label}>{fieldData.label}</div>
-                {fieldData.fieldType == "text" ? (
-                  <Input
-                    autoComplete="off"
-                    status={
-                      !isValid && userData[fieldData.field] == ""
-                        ? "error"
-                        : null
-                    }
-                    placeholder={`input ${fieldData.field}`}
-                    value={userData[fieldData.field]}
-                    onChange={(e) => {
-                      handleInputChange(fieldData.field, e.target.value);
-                    }}
-                  />
-                ) : fieldData.fieldType == "select" ? (
-                  <Select
-                    defaultValue={"Select States"}
-                    className={style.select}
-                    onChange={changeCityList}
-                    options={states.map((val, ind) => {
-                      return {
-                        value: val.isoCode,
-                        label: val.name,
-                      };
-                    })}
-                  />
-                ) : (
-                  <Input.Password
-                    autoComplete="off"
-                    status={
-                      !isValid && userData["password"] == "" ? "error" : null
-                    }
-                    placeholder="input password"
-                    value={userData["password"]}
-                    onChange={(e) => {
-                      handleInputChange("password", e.target.value);
-                    }}
-                  />
-                )}
-              </div>
-            );
+            switch (fieldData.fieldType) {
+              case "text":
+                return (
+                  <div className={style.input_fields} key={index}>
+                    <div className={style.label}>{fieldData.label}</div>
+                    <Input
+                      autoComplete="off"
+                      status={
+                        !isValid && userData[fieldData.field] == ""
+                          ? "error"
+                          : null
+                      }
+                      placeholder={`input ${fieldData.label}`}
+                      value={userData[fieldData.field]}
+                      onChange={(e) => {
+                        handleInputChange(fieldData.field, e.target.value);
+                      }}
+                    />
+                  </div>
+                );
+              case "select":
+                return (
+                  <div className={style.input_fields} key={index}>
+                    <div className={style.label}>{fieldData.label}</div>
+                    <Select
+                      defaultValue={"Select States"}
+                      className={style.select}
+                      onSelect={(value, label) => {
+                        if (fieldData.field === "state")
+                          handleCityChange(value, label, "state");
+                        else handleCityChange(value, label, "city");
+                      }}
+                      options={
+                        fieldData.field === "state"
+                          ? states.map((val, ind) => {
+                              return {
+                                value: val.isoCode,
+                                label: val.name,
+                              };
+                            })
+                          : cities.map((val, ind) => {
+                              return {
+                                value: val.name,
+                                label: val.name,
+                              };
+                            })
+                      }
+                    />
+                  </div>
+                );
+              case "password":
+                return (
+                  <div className={style.input_fields} key={index}>
+                    <div className={style.label}>{fieldData.label}</div>
+                    <Input.Password
+                      autoComplete="off"
+                      status={
+                        !isValid && userData["password"] == "" ? "error" : null
+                      }
+                      placeholder="input password"
+                      value={userData["password"]}
+                      onChange={(e) => {
+                        handleInputChange("password", e.target.value);
+                      }}
+                    />
+                  </div>
+                );
+              default:
+                <></>;
+            }
           })}
 
-          <div className={style.input_fields}>
-            <div className={style.label}>Password</div>
-            <Input.Password
-              autoComplete="off"
-              status={!isValid && userData["password"] == "" ? "error" : null}
-              placeholder="input password"
-              value={userData["password"]}
-              onChange={(e) => {
-                handleInputChange("password", e.target.value);
-              }}
-            />
-          </div>
           <div className={style.input_fields}>
             <Button style={{ width: "100%" }} type="primary" onClick={onSubmit}>
               Register
