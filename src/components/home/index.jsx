@@ -11,7 +11,7 @@ const HomeComponent = () => {
   return (
     <div>
       <LandingSection />
-      <DonateSection />
+      {/* <DonateSection /> */}
     </div>
   );
 };

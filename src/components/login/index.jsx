@@ -1,14 +1,24 @@
 import React, { useState } from "react";
-import { Button, Input } from "antd";
+import { Button, Input, notification } from "antd";
 import style from "./style.module.scss";
 import { useAuth } from "../../context/login";
 import { Navigate } from "react-router-dom";
+
 const LoginComponent = ({ setShowLogin }) => {
   const { access, login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isValid, setIsValid] = useState(true);
-  const onSubmit = () => {
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, msg) => {
+
+    api[type]({
+      message: "Notification Title",
+      description: msg,
+    });
+  };
+
+  const onSubmit = async () => {
     if (email === "") {
       setIsValid(false);
       return;
@@ -19,7 +29,12 @@ const LoginComponent = ({ setShowLogin }) => {
     }
     if (isValid) {
       const res = login(email, password);
-      console.log("Res", res);
+      let output = await res;
+      if (output === undefined || output === null) {
+        openNotificationWithIcon("error", "Incorrect Email or Password.");
+        return;
+      }
+      openNotificationWithIcon("success", "Login Successfully.");
     }
   };
 
@@ -32,7 +47,7 @@ const LoginComponent = ({ setShowLogin }) => {
           <div className={style.header}>
             <div className={style.title}>Login</div>
             <div className={style.sub_title}>
-              Enter your credential to access your account.
+              Enter your credential to access your account. {contextHolder}
             </div>
           </div>
           <div className={style.input_fields}>
@@ -77,12 +92,6 @@ const LoginComponent = ({ setShowLogin }) => {
           </div>
         </div>
       </div>
-      <div
-        className={style.img_wrapper}
-        style={{
-          backgroundImage: `url(${"https://i.pinimg.com/564x/92/1c/d4/921cd4bc2663d22cf4ad08601725e816.jpg"})`,
-        }}
-      ></div>
     </div>
   );
 };

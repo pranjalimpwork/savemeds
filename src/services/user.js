@@ -16,7 +16,6 @@ export const getUsers = () => {
   const database = collection(db, "user");
   const unsubscribe = onSnapshot(database, (snapData) => {
     snapData.docs.map((data) => {
-      console.log("Dataa", data.data());
       return data.data();
     });
   });

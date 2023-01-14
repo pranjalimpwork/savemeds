@@ -8,8 +8,8 @@ import {
 
 const FooterComponent = () => {
   return (
-    <div>
-      <footer>
+    <>
+      {/* <footer>
         <div className="main">
           <div className="col1">
             <h3 className="heading">About the store</h3>
@@ -57,8 +57,8 @@ const FooterComponent = () => {
           <a href="#">Security and privacy</a>
           <a href="#">Newsletter</a>
         </p>
-      </footer>
-    </div>
+      </footer> */}
+    </>
   );
 };
 

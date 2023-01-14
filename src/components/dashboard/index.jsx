@@ -5,70 +5,30 @@ import ModalComponent from "./modal";
 import { useAuth } from "../../context/login";
 import { Navigate } from "react-router-dom";
 import { getUser } from "../../services/user";
-import { getAllMedicine, getUserAddedMedicine } from "../../services/database";
+import { getUserAddedMedicine, deleteData } from "../../services/database";
+import { dashboardTableColums } from "../../utils/data";
 const DashBoardComponent = () => {
   const { access, user } = useAuth();
   const [medicineData, setMedicineData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-    },
-    {
-      title: "Added Data",
-      dataIndex: "addedDate",
-      key: "addedDate",
-    },
-    {
-      title: "MNF Date",
-      dataIndex: "manufactureDate",
-      key: "manufactureDate",
-    },
-    {
-      title: "EXP Date",
-      dataIndex: "expireDate",
-      key: "expireDate",
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <a>Delete</a>
-        </Space>
-      ),
-    },
-  ];
 
   const getUserData = async () => {
     const res = await getUser(user.uid);
     setUserInfo({ ...res, id: user.uid });
     setLoading(false);
-    console.log("res", res);
+
   };
 
   useEffect(() => {
     getUserData();
-    if (user) getUserAddedMedicine(user.uid, setMedicineData);
-    // const unsub = getAllMedicine(setMedicineData);
-    // return () => {
-    //   unsub();
-    // };
+    if (user) {
+      getUserAddedMedicine(user.uid, setMedicineData);
+    }
   }, []);
 
-  useEffect(() => {
-    getUserAddedMedicine(user.uid, setMedicineData);
-  }, [user]);
+
 
   return access ? (
     !loading ? (
@@ -79,8 +39,7 @@ const DashBoardComponent = () => {
               Welcome Back, {userInfo.firstname} {userInfo.lastname}
             </div>
             <div className={style.sub_contxt}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Temporibus, doloribus!
+            Please donate the unused medicines. It will be a huge contribution to our service.
             </div>
           </div>
           <div className={style.action_btn_container}>
@@ -98,7 +57,7 @@ const DashBoardComponent = () => {
             <div className={style.table}>
               <Table
                 className={""}
-                columns={columns}
+                columns={dashboardTableColums}
                 dataSource={medicineData}
               />
             </div>

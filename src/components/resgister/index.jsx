@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Select } from "antd";
+import { Button, Input, Select, notification } from "antd";
 import style from "./style.module.scss";
 import { State, City } from "country-state-city";
 import { useAuth } from "../../context/login";
 import { Navigate } from "react-router-dom";
 import { addUser } from "../../services/user";
+import { validateObject } from "../../utils/helper";
 const RegisterComponent = ({ setShowLogin }) => {
   const { registerUser, access } = useAuth();
-  const onSearch = (value) => console.log(value);
   const [cities, setCities] = useState([{}]);
   const [states, setStates] = useState([]);
+  const [invalidKey, setInvalidKey] = useState([]);
   useEffect(() => {
     setStates(State.getStatesOfCountry("IN"));
     setCities(City.getCitiesOfState("IN", "CT"));
@@ -79,7 +80,14 @@ const RegisterComponent = ({ setShowLogin }) => {
     },
   ];
 
-  const [isValid, setIsValid] = useState(true);
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, msg) => {
+
+    api[type]({
+      message: "Notification Title",
+      description: msg,
+    });
+  };
 
   const handleInputChange = (field, value) => {
     let data = { ...userData };
@@ -91,27 +99,23 @@ const RegisterComponent = ({ setShowLogin }) => {
     let data = { ...userData };
     data[field] = label.label;
     data.country = "INDIA";
-    console.log(data);
+
     setUserData(data);
     if (field === "state") setCities(City.getCitiesOfState("IN", value));
   };
 
   const onSubmit = async () => {
-    if (userData.email === "") {
-      setIsValid(false);
+    const validArray = validateObject(userData);
+    if (validArray.length > 0) {
+      setInvalidKey(validArray);
+      openNotificationWithIcon("error", "Incorrect Field Value.");
       return;
     }
-    if (userData.email === "") {
-      setIsValid(false);
-      return;
-    }
-    if (isValid) {
-      const res = await registerUser(userData.email, userData.password);
-      if (res) {
-        await addUser(res.uid, userData);
-      } else {
-        //
-      }
+    const res = await registerUser(userData.email, userData.password);
+    if (res) {
+      await addUser(res.uid, userData);
+    } else {
+      //
     }
   };
 
@@ -124,7 +128,7 @@ const RegisterComponent = ({ setShowLogin }) => {
           <div className={style.header}>
             <div className={style.title}>Register</div>
             <div className={style.sub_title}>
-              Enter your credential to access your account.
+              Enter your credential to access your account.{contextHolder}
             </div>
           </div>
 
@@ -137,9 +141,7 @@ const RegisterComponent = ({ setShowLogin }) => {
                     <Input
                       autoComplete="off"
                       status={
-                        !isValid && userData[fieldData.field] == ""
-                          ? "error"
-                          : null
+                        invalidKey.includes(fieldData.field) ? "error" : null
                       }
                       placeholder={`input ${fieldData.label}`}
                       value={userData[fieldData.field]}
@@ -156,6 +158,9 @@ const RegisterComponent = ({ setShowLogin }) => {
                     <Select
                       defaultValue={"Select States"}
                       className={style.select}
+                      status={
+                        invalidKey.includes(fieldData.field) ? "error" : null
+                      }
                       onSelect={(value, label) => {
                         if (fieldData.field === "state")
                           handleCityChange(value, label, "state");
@@ -186,7 +191,7 @@ const RegisterComponent = ({ setShowLogin }) => {
                     <Input.Password
                       autoComplete="off"
                       status={
-                        !isValid && userData["password"] == "" ? "error" : null
+                        invalidKey.includes(fieldData.field) ? "error" : null
                       }
                       placeholder="input password"
                       value={userData["password"]}

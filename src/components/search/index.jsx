@@ -5,26 +5,36 @@ import { Space, Input, Table, Tag, Select, Button } from "antd";
 import { getAllMedicine } from "../../services/database";
 const { Search } = Input;
 
-const handleChange = (value, label) => {};
-
 const SearchComponent = () => {
-  const onSearch = (value) => console.log(value);
   const [cities, setCities] = useState([{}]);
   const [states, setStates] = useState([]);
   const [allMedicineData, setAllMedicineData] = useState([]);
+  const [data, setData] = useState([]);
+  const [showClearButton, setShowClearButton] = useState(false);
   const [loading, setloading] = useState(false);
-  useEffect(() => {
-    setStates(State.getStatesOfCountry("IN"));
-    setCities(City.getCitiesOfState("IN", "CT"));
-  }, []);
 
-  const changeCityList = (value, label) => {
-    console.log("dada", value);
-    setCities(City.getCitiesOfState("IN", value));
+  const handleCityChange = (value, label) => {
+    setShowClearButton(true);
+    let newData = allMedicineData.filter((val) => {
+      if (val.city) {
+        let city = val.city.toUpperCase();
+        return city.includes(label.label.toUpperCase());
+      }
+    });
+
+    setData(newData);
   };
 
-  const handleDDD = (d, v) => {
-    console.log(d, v);
+  const handleStateChange = (value, label) => {
+    setShowClearButton(true);
+    let newData = allMedicineData.filter((val) => {
+      if (val.state) {
+        let state = val.state.toUpperCase();
+        return state.includes(label.label.toUpperCase());
+      }
+    });
+    setCities(City.getCitiesOfState("IN", value));
+    setData(newData);
   };
 
   const columns = [
@@ -64,41 +74,35 @@ const SearchComponent = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button>Buy Now</Button>
+          <a href={`tel:+91${record.phoneNumber}`}>
+            <Button>Call Owner </Button>
+          </a>
         </Space>
       ),
     },
   ];
-  const data = [
-    {
-      key: "1",
-      name: "John Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-      tags: ["nice", "developer"],
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      age: 42,
-      address: "London No. 1 Lake Park",
-      tags: ["loser"],
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      age: 32,
-      address: "Sidney No. 1 Lake Park",
-      tags: ["cool", "teacher"],
-    },
-  ];
+
+  const filterData = (medicineName) => {
+    let newData = allMedicineData.filter((data) => {
+      let name = data.name.toUpperCase();
+      return name.includes(medicineName.toUpperCase());
+    });
+    setData(newData);
+  };
+
+  const clearFilter = () => {
+    setData(allMedicineData);
+    setShowClearButton(false);
+  };
 
   useEffect(() => {
+    setStates(State.getStatesOfCountry("IN"));
+    setCities(City.getCitiesOfState("IN", "CT"));
     getAllMedicine(setAllMedicineData);
   }, []);
 
   useEffect(() => {
-    console.log("allMedicineData", allMedicineData);
+    setData(allMedicineData);
   }, [allMedicineData]);
 
   return (
@@ -109,8 +113,10 @@ const SearchComponent = () => {
             <div className={style.title}>Enter The Name Of The Medicine </div>
             <Search
               placeholder="input search text"
-              onSearch={onSearch}
               className={style.search_input}
+              onChange={(e) => {
+                filterData(e.target.value);
+              }}
             />
           </div>
           <div className={style.filter_container}>
@@ -120,7 +126,7 @@ const SearchComponent = () => {
                 <Select
                   defaultValue={"Select States"}
                   className={style.select}
-                  onSelect={changeCityList}
+                  onSelect={handleStateChange}
                   options={states.map((val, ind) => {
                     return {
                       value: val.isoCode,
@@ -136,7 +142,7 @@ const SearchComponent = () => {
                 <Select
                   defaultValue={"Select Cities"}
                   className={style.select}
-                  onSelect={handleChange}
+                  onSelect={handleCityChange}
                   options={cities.map((val, ind) => {
                     return {
                       value: val.name,
@@ -146,13 +152,18 @@ const SearchComponent = () => {
                 />
               )}
             </div>
+            {showClearButton && (
+              <div
+                className={style.filter_selector}
+                onClick={() => clearFilter()}
+              >
+                <Button>Clear Filter</Button>
+              </div>
+            )}
           </div>
         </div>
         <div className={style.data_field_container}>
-          {allMedicineData.length > 0 && (
-            <Table columns={columns} dataSource={allMedicineData} />
-          )}
-          {allMedicineData.length === 0 && <h1>No Data</h1>}
+          <Table columns={columns} dataSource={data} />
         </div>
       </div>
     </>

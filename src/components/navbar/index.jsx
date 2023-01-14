@@ -9,7 +9,6 @@ const NavbarComponent = () => {
   const { access, logout } = useAuth();
   const [currentRoute, setcurrentRoute] = useState(location.pathname);
   function myFunction() {
-    console.log("ara", window.location.hash);
     var x = document.getElementById("myTopnav");
     if (x.className === "topnav") {
       x.className += " responsive";
@@ -52,6 +51,21 @@ const NavbarComponent = () => {
   useEffect(() => {
     setcurrentRoute(location.pathname);
   }, [location]);
+
+  window.onscroll = function () {
+    scrollFunction();
+  };
+
+  function scrollFunction() {
+    if (
+      document.body.scrollTop > 20 ||
+      document.documentElement.scrollTop > 20
+    ) {
+      document.getElementById("myTopnav").classList.add("show");
+    } else {
+      document.getElementById("myTopnav").classList.remove("show");
+    }
+  }
 
   return (
     <div>

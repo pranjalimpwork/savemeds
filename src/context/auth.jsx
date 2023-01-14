@@ -21,7 +21,7 @@ const AuthProvider = ({ children }) => {
         setToken(token);
         const userData = window.localStorage.getItem("user");
 
-        console.log("userrrr",JSON.parse(userData));
+
         if (!!userData) setUser(JSON.parse(userData));
         setLoading(false);
       } else {
@@ -33,7 +33,7 @@ const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     let resData = null;
-    console.log("emai;", email);
+
     resData = signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         let res = userCredential.user;
@@ -42,7 +42,7 @@ const AuthProvider = ({ children }) => {
         setToken(res.accessToken);
         localStorage.setItem("token", res.accessToken);
         localStorage.setItem("user", JSON.stringify(res));
-        console.log("res",res);
+
         return res;
       })
       .catch((error) => {});
@@ -57,10 +57,10 @@ const AuthProvider = ({ children }) => {
         setAccess(false);
         setUser(null);
         setToken(null);
-        console.log("logout");
+
       })
       .catch((error) => {
-        console.log("Err", error);
+
         // An error happened.
       });
   };
