@@ -10,6 +10,9 @@ const SearchComponent = () => {
   const [states, setStates] = useState([]);
   const [allMedicineData, setAllMedicineData] = useState([]);
   const [data, setData] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("Select Cities");
+  const [selectedState, setSelectedState] = useState("Select State");
+  const [searchValue, setSearchValue] = useState("");
   const [showClearButton, setShowClearButton] = useState(false);
   const [loading, setloading] = useState(false);
 
@@ -21,7 +24,7 @@ const SearchComponent = () => {
         return city.includes(label.label.toUpperCase());
       }
     });
-
+    setSelectedCity(label);
     setData(newData);
   };
 
@@ -34,6 +37,7 @@ const SearchComponent = () => {
       }
     });
     setCities(City.getCitiesOfState("IN", value));
+    setSelectedState(label);
     setData(newData);
   };
 
@@ -93,6 +97,9 @@ const SearchComponent = () => {
   const clearFilter = () => {
     setData(allMedicineData);
     setShowClearButton(false);
+    setSelectedCity("Select Cities");
+    setSelectedState("Select States");
+    setSearchValue("");
   };
 
   useEffect(() => {
@@ -114,8 +121,10 @@ const SearchComponent = () => {
             <Search
               placeholder="input search text"
               className={style.search_input}
+              value={searchValue}
               onChange={(e) => {
                 filterData(e.target.value);
+                setSearchValue(e.target.value);
               }}
             />
           </div>
@@ -124,7 +133,7 @@ const SearchComponent = () => {
               <div className={style.label}>Select States</div>
               {states && (
                 <Select
-                  defaultValue={"Select States"}
+                  value={selectedState}
                   className={style.select}
                   onSelect={handleStateChange}
                   options={states.map((val, ind) => {
@@ -140,7 +149,7 @@ const SearchComponent = () => {
               <div className={style.label}>Select City</div>
               {cities && (
                 <Select
-                  defaultValue={"Select Cities"}
+                  value={selectedCity}
                   className={style.select}
                   onSelect={handleCityChange}
                   options={cities.map((val, ind) => {
